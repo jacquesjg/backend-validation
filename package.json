@@ -17,5 +17,13 @@
   "devDependencies": {},
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacquesjg/backend-validation.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jacquesjg/backend-validation/issues"
+  },
+  "homepage": "https://github.com/jacquesjg/backend-validation#readme",
   "description": ""
 }
