@@ -10,51 +10,56 @@ const {
 
 const User = require('../model/User')
 
-const checkForNumberAndSymbol = (target) => {
-    if (target.match(/[!`\-=@#$%^&*()\[\],.?":;{}|<>1234567890]/g)) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function checkPaswordStrength(target) {
-    var strongRegex = new RegExp(
-        "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[_!@#$%^=-{}[]&*|:;'?.<>`~])(?=.{8,})"
-    );
-    return !strongRegex.test(target);
-}
-
 async function createUser(req, res) {
     const { firstName, lastName, username, email, password } = req.body;
 
-    // How would you validate firstName to make sure only alphabet is allowed?
     let errObj = {};
-
-    if (checkForNumberAndSymbol(firstName)) {
-        errObj.firstName = "First Name cannot have special characters or numbers"
+    for (let key in body) {
+        if (isEmpty(body[key])) {
+            errObj[`${key}`] = `${key} cannot be empty`;
+        }
     }
 
-    if (checkForNumberAndSymbol(lastName)) {
-        errObj.lastName = "First Name cannot have special characters or numbers"
+    if (!isAlpha(firstName)) {
+        errObj.firstName = "First Name cannot have special characters or numbers";
+    }
+
+    if (!isAlpha(lastName)) {
+        errObj.lastName = "Last Name cannot have special characters or numbers";
+    }
+
+    if (!isAlphanumeric(username)) {
+        errObj.username = "Username cannot have special characters";
+    }
+
+    if (!isEmail(email)) {
+        errObj.email = "please enter a valid email";
+    }
+
+    if (!isStrongPassword(password)) {
+        errObj.password =
+            "Your password must contain 1 lowercase, 1 uppercase, 1 number, 1 special character and at least 8 characters long";
     }
 
     if (Object.keys(errObj).length > 0) {
-        return res
-            .status(500)
-            .json({
-                message: "error",
-                error: errObj,
-            })
+        //How would you validate firstName to make sure only alphabet is allowed
+        return res.status(500).json({
+            message: "error",
+            error: errObj,
+        });
     }
 
     try {
+
+        let salt = await bcrypt.genSalt(10);
+        let hashedPassword = await bcrypt.hash(password, salt);
+
         const createdUser = new User({
             firstName,
             lastName,
             username,
             email,
-            password,
+            password: hashedPassword,
         });
 
         let savedUser = await createdUser.save()
