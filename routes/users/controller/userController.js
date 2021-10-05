@@ -1,3 +1,13 @@
+const bcrypt = require("bcryptjs");
+
+const {
+    isEmpty,
+    isAlpha,
+    isAlphanumeric,
+    isEmail,
+    isStrongPassword,
+} = require("validator");
+
 const User = require('../model/User')
 
 const checkForNumberAndSymbol = (target) => {
@@ -8,8 +18,11 @@ const checkForNumberAndSymbol = (target) => {
     }
 }
 
-function checkPasswordStrength(target) {
-    
+function checkPaswordStrength(target) {
+    var strongRegex = new RegExp(
+        "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[_!@#$%^=-{}[]&*|:;'?.<>`~])(?=.{8,})"
+    );
+    return !strongRegex.test(target);
 }
 
 async function createUser(req, res) {
