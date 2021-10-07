@@ -1,0 +1,19 @@
+function checkIsUndefined(req, res, next) {
+    if (Object.keys(req.body).length === 0 || req.body === undefined) {
+        return res
+            .status(500)
+            .json({ message: "failure", error: "Please fill out the form!" })
+    } else {
+        next();
+    }
+}
+
+module.exports = {
+    checkIsUndefined,
+}
+
+// "firstName": "Johnny",
+// "lastName": "Appleseed",
+// "username": "jappleseed",
+// "email": "jappleseed@gmail.com",
+// "password": "Jappleseed4$"
